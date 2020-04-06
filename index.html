@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- import vue js -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js'></script>
+
+    <!-- import animate.css -->
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css' />
+
+    <!-- import bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+
+        <div class="contener">
+            <transition name="btnAnimate">
+                <button :disabled="!start" v-if="start" @click="start=false" type="button"
+                    class="btn btn-primary">START</button>
+            </transition>
+
+            <transition v-for="(i,index) in items" name="item-animate" enter-active-class=" animated bounceInDown"
+                leave-active-class=" animated bounceOutLeft">
+                <div v-if="select" @click="activeItem(index,$event)" :class="{active:i.active}" class="item"
+                    :style="styleObjectToCss(i.style)">
+                    <div class="imgArea ">
+
+                        <img :src="i.img" class="bounce animated infinite" alt="i.name">
+
+                    </div>
+                    <div class="titleArea">
+                        <div class="name">
+                            {{i.name}}
+                        </div>
+                        <div class="subname">
+                            {{i.subname}}
+                        </div>
+                    </div>
+
+
+                </div>
+            </transition>
+            <transition name="item-animate" enter-active-class=" animated bounceInDown"
+                leave-active-class=" animated bounceOutLeft">
+                <canvas class="canImg" v-show="selected" @mousedown="eventDown" @mouseup="eventUp"
+                    @mousemove="eventMove" @touchstart="eventDown" @touchmove="eventMove" @touchend="eventUp"></canvas>
+
+            </transition>
+            <transition name="item-animate" enter-active-class=" animated bounceInDown"
+                leave-active-class=" animated bounceOutLeft">
+                <div v-if="ending" class="end" :style="styleObjectToCss(activeObj.style)">
+                    <title>生日快樂</title>
+                    <span>請截圖找姵妏兌換獎品</span>
+                </div>
+            </transition>
+
+
+        </div>
+
+
+
+
+    </div>
+
+</body>
+<style>
+    .contener {
+        display: flex;
+        justify-content: center;
+        height: 750px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .contener * {
+        display: flex;
+    }
+
+    .item {
+        z-index: 10;
+        width: 90px;
+        height: 350px;
+        margin: 1rem;
+        transition: all 1s;
+        background-color: blue;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        font-family: "微軟正黑體";
+    }
+
+    .item:first-child {
+        border-radius: 10px 0 0 10px;
+    }
+
+    .item:last-child {
+        border-radius: 0 10px 10px 0;
+    }
+
+
+    .imgArea img {
+        opacity: 0;
+        width: 0px;
+        transition: all 1s;
+    }
+
+    .titleArea {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .item .name {
+        display: flex;
+        font-size: 5rem;
+        color: white;
+    }
+
+    .item .subname {
+        color: cadetblue;
+        font-size: 0.5rem;
+    }
+
+    .item:hover {
+        width: 500px;
+        transition: all 1s;
+
+    }
+
+    .item:hover .imgArea img {
+        display: flex;
+        width: 250px;
+        opacity: 1;
+    }
+
+    .btnAnimate-enter-active {
+        animation: bounce-in .5s;
+    }
+
+    .btnAnimate-leave-active {
+        animation: bounce-in .5s reverse;
+    }
+
+    .end {
+
+        width: 520px;
+        height: 520px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: "微軟正黑體";
+    }
+
+    .end title {
+        font-size: 3rem;
+        color: white;
+    }
+
+    .end span {
+        color: darkgreen;
+    }
+
+
+
+
+    @keyframes bounce-in {
+        0% {
+            transform: scale(0);
+        }
+
+        50% {
+            transform: scale(5);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @media (min-height: 500px) and (max-height: 750px) {
+        .contener {
+
+            height: 500px;
+
+        }
+
+    }
+
+    @media (max-height: 500px) {
+        .contener {
+
+            height: 300px;
+            flex-direction: column;
+            flex-wrap: nowrap;
+
+        }
+
+        .item {
+            width: 300px;
+            height: 150px;
+        }
+
+
+    }
+
+    @media (max-width: 400px) {
+        .contener {
+
+            height: 700px;
+            flex-direction: column;
+            flex-wrap: nowrap;
+
+        }
+
+        .item:hover .imgArea img {
+            width: 150px;
+        }
+
+        .item:first-child {
+            border-radius: 10px 10px 0 0;
+        }
+
+        .item:last-child {
+            border-radius: 0 0 10px 10px;
+        }
+
+        .item {
+            width: 300px;
+            height: 150px;
+        }
+
+        .end {
+            width: 375px;
+            height: auto;
+        }
+
+
+    }
+</style>
+
+<script>
+
+    const app = new Vue({
+        name: "myapp",
+        el: "#app",
+        data: {
+            items: [{
+                name: "冒險", subname: "意想不到的旅程", img: "dog.png", selectImg: "11.jpg",
+                active: false, style: {
+                    "background-color": "#ffd5e5",
+
+                }
+            }, {
+                name: "飢餓", subname: "飢腸轆轆的妳", active: false, img: "bear.png", selectImg: "22.jpg", style: {
+                    "background-color": "#a0ffe6"
+                }
+            }, {
+                name: "迷惘", subname: "找不到方向", active: false, img: "snake.png", selectImg: "33.jpg", style: {
+                    "background-color": "#81f5ff",
+
+                }
+            }],
+            start: true,
+            select: false,
+            selected: false,
+            ending: false,
+            canvas: {},
+            mousedown: false,
+            offsetX: 0,
+            offsetY: 0,
+            ctx: {},
+            drawX: null,
+            drawY: null,
+            moveDistance: 0
+
+        },
+        computed: {
+
+            activeImg() {
+                var img = new Image
+                img.src = this.items.find(el => {
+                    return el.active
+                }).selectImg
+
+                return img
+            },
+            activeObj() {
+
+                return this.items.find(el => {
+                    return el.active
+                })
+
+            },
+
+        },
+        methods: {
+            chengeSelectStatus() {
+                this.select = true
+            },
+            styleObjectToCss(obj) {
+                return Object.keys(obj).map(key => {
+                    return `${key}:${obj[key]}`
+                }).join(';')
+            },
+            activeItem(index, event) {
+                this.items.forEach(element => {
+                    element.active = false
+                });
+                this.items[index].active = true
+                console.log(document.querySelectorAll(".item")[index].classList)
+
+                if (document.querySelectorAll(".item")[index].classList.contains("active")) {
+                    this.initCanvas(this.activeImg)
+                    this.select = false
+                    setTimeout(() => { this.selected = true }, 500)
+
+                }
+
+            },
+            cancleActive() {
+                this.items.forEach(element => {
+                    element.active = false
+                });
+
+            },
+            initCanvas(img) {
+
+
+                this.canvas.style.backgroundImage = `url(${img.src})`
+                this.canvas.style.backgroundSize = "contain";
+                this.canvas.style.backgroundRepeat = "no-repeat";
+                this.canvas.style.backgroundPosition = "center";
+
+                var h = 520
+                var w = 520
+                this.canvas.height = h
+                this.canvas.width = w
+                this.offsetX = this.canvas.offsetLeft
+                this.offsetY = this.canvas.offsetTop
+
+                this.ctx = this.canvas.getContext('2d');
+
+                this.ctx.fillStyle = 'transparent'
+                this.ctx.fillRect(0, 0, w, h)
+                this.layer(this.ctx, w, h)
+                this.ctx.globalCompositeOperation = 'destination-out'
+            },
+            emdCanvas(img) {
+
+                this.canvas.style.backgroundImage = `url(${img.src})`
+                this.canvas.style.backgroundSize = "contain";
+                this.canvas.style.backgroundRepeat = "no-repeat";
+                this.canvas.style.backgroundPosition = "center";
+
+                var h = 520
+                var w = 520
+                this.canvas.height = h
+                this.canvas.width = w
+                this.offsetX = this.canvas.offsetLeft
+                this.offsetY = this.canvas.offsetTop
+
+                this.ctx = this.canvas.getContext('2d');
+
+                // this.ctx.fillStyle = 'transparent'
+                // this.ctx.fillRect(0, 0, w, h)
+            },
+            layer(ctx, w, h) {
+                ctx.fillStyle = 'gray'
+                ctx.fillRect(0, 0, w, h)
+
+            },
+            eventDown(e) {
+                e.preventDefault()
+                console.log("d")
+                this.mousedown = true
+            },
+            eventUp(e) {
+                e.preventDefault()
+                console.log("UP")
+                this.mousedown = false
+            },
+            eventMove(e) {
+                e.preventDefault()
+                if (this.moveDistance > 2000) {
+                    // this.selected = false
+                    this.endActiov()
+
+                } else
+                    if (this.mousedown) {
+                        if (e.changedTouches) {
+                            e = e.changedTouches[e.changedTouches.length - 1]
+                        }
+                        this.offsetX = this.canvas.offsetLeft
+                        this.offsetY = this.canvas.offsetTop
+
+                        var x = (e.clientX + document.body.scrollLeft || e.pageX) - this.offsetX || 0
+                        var y = (e.clientY + document.body.scrollTop || e.pageY) - this.offsetY || 0
+                        // console.log(x, y)
+                        // console.log(e.clientX, e.clientY, 'clinet')
+                        // console.log(e.pageX, e.pageY, 'page')
+                        // console.log(this.offsetX, this.offsetY, 'offset')
+                        this.ctx.beginPath()
+                        this.ctx.arc(x, y, 35, 0, Math.PI * 2)
+                        this.ctx.fill()
+                        this.moving(x, y)
+
+                    }
+
+
+            },
+            moving(newX, newY) {
+                if (this.drawY == null || this.drawX == null) {
+                    this.drawX = newX
+                    this.drawY = newY
+                }
+                else {
+                    let x = newX - this.drawX
+                    let y = newY - this.drawY
+
+                    this.moveDistance = this.moveDistance + Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 1 / 2)
+                    this.drawX = newX
+                    this.drawY = newY
+                }
+
+            },
+            endActiov() {
+                if (this.ending == false) {
+                    this.ending = true
+                    this.layer(this.ctx, 520, 520)
+                    localStorage.setItem("selectEnd", this.activeObj.name)
+                }
+
+            }
+        },
+        watch: {
+            start: {
+                handler() {
+                    if (this.start == false && this.ending == false) {
+                        setTimeout(this.chengeSelectStatus, 500)
+                    }
+                }
+            },
+            activeImg: {
+                handler(img) {
+                    // console.log(img)
+
+                }
+            },
+
+
+        },
+        mounted() {
+            this.canvas = document.querySelector('.canImg')
+            if (localStorage.getItem("selectEnd") == null) {
+
+            } else {
+                let locName = localStorage.getItem("selectEnd")
+
+                this.start = false
+                this.select = false
+                this.selected = true
+                this.ending = true
+
+                this.moveDistance = 9999
+                this.items.forEach(el => {
+                    if (el.name == locName) {
+                        el.active = true
+                    }
+                })
+                this.emdCanvas(this.activeImg)
+
+            }
+
+        }
+
+    })
+    Vue.config.devtools = true
+</script>
+
+</html>
